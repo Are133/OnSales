@@ -1,0 +1,68 @@
+﻿@model IEnumerable<OnSales.Common.Entities.Country>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="~/css/table.css" rel="stylesheet" />
+
+<br />
+<table class="datatable" id="datatable">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Status</th>
+            <th>@Html.DisplayNameFor(mode => mode.Name)</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="table-checkbox"><input type="checkbox" name="" id=""></td>
+                <td><span class="available"></span></td>
+                <td>@Html.DisplayFor(model => item.Name)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script src="~/js/table.js"></script>
+<script>
+    const dt = new DataTable('#datatable', [{
+        id: 'bAdd',
+        text: 'agregar',
+        icon: 'add_circle',
+        action() {
+           
+        }
+    }
+    ]);
+
+    dt.parse();
+</script>
+
+@*<a asp-action="Create">+</a>*@
+@*<table class="highlight responsive-table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(mode => mode.Name)</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(md => item.Name)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>*@
+
