@@ -19,44 +19,33 @@ namespace OnSales.Web.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            return View(await _contex.Countries.OrderByDescending(countrie => countrie.Name).ToListAsync());
+            return View(await _contex.Countries.ToListAsync());
         }
 
-        public async Task<IActionResult>Details(int? id)
-        {
-            if(id == null)
-            {
-                return NotFound();
-            }
 
-            var countrie = await _contex.Countries.FirstOrDefaultAsync(c => c.Id == id);
-
-            if(countrie == null)
-            {
-                return NotFound();
-            }
-
-            return View(countrie);
-        }
-
-        public IActionResult Create()
+        public IActionResult AddOrEdit()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         public async Task<IActionResult> AddOrEdit(Country country)
         {
-            if (ModelState.IsValid)
-            {
-                _contex.Add(country);
-                await _contex.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            
+                if(country.Id == 0)
+                {
+                    _contex.Add(country);
+                }
+                else
+                {
+                    _contex.Update(country);
+                }
 
-            return View(country);
+                await _contex.SaveChangesAsync();
+
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost, ActionName("DeleteConfirmed")]

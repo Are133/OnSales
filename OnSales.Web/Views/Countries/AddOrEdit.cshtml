@@ -1,23 +1,26 @@
-﻿@model IEnumerable<OnSales.Common.Entities.Country>
+﻿@model OnSales.Common.Entities.Country
 
 @{
     ViewData["Title"] = "AddOrEdit";
 }
 
+
 <div class="row">
-    <form class="col s12">
+    <form class="col s12" asp-action="AddOrEdit" enctype="multipart/form-data" id="formulario" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+
         <div class="row">
             <div class="input-field col s6">
-                <i class="material-icons prefix">account_circle</i>
-                <input id="icon_prefix" type="text" class="validate">
-                <label for="icon_prefix">First Name</label>
-            </div>
-            <div class="input-field col s6">
-                <i class="material-icons prefix">phone</i>
-                <input id="icon_telephone" type="tel" class="validate">
-                <label for="icon_telephone">Telephone</label>
+                <i class="material-icons prefix">public</i>
+                <input asp-for="Name" required id="icon_prefix" type="text" class="validate">
+                <label for="icon_prefix">Nombre</label>
             </div>
         </div>
+
+        <button class="btn waves-effect waves-light" type="submit" name="action">
+            Registrar
+            <i class="material-icons right">send</i>
+        </button>
     </form>
 </div>
-
