@@ -47,7 +47,7 @@ namespace OnSales.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult>Create(Country country)
+        public async Task<IActionResult> AddOrEdit(Country country)
         {
             if (ModelState.IsValid)
             {
@@ -58,59 +58,15 @@ namespace OnSales.Web.Controllers
 
             return View(country);
         }
-        public async Task<IActionResult> Edit(int? id)
+
+        [HttpPost, ActionName("DeleteConfirmed")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-           if(id == null)
-           {
-                return NotFound();
-           }
-
-            var countrie = await _contex.Countries.FindAsync(id);
-
-            if(countrie == null)
-            {
-                return NotFound();
-            }
-
-            return View(countrie);
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-
-        public async Task<IActionResult>Edit(int id, Country country)
-        {
-            if(id != country.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                _contex.Update(country.Id);
-                await _contex.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(country);
-        }
-
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
             var countrie = await _contex.Countries.FirstOrDefaultAsync(c => c.Id == id);
-
-            if(countrie != null)
-            {
-                _contex.Countries.Remove(countrie);
-                await _contex.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Index));
+            _contex.Countries.Remove(countrie);
+            await _contex.SaveChangesAsync();
+            return Ok(countrie);
         }
     }
 }
