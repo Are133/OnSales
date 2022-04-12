@@ -4,65 +4,39 @@
     ViewData["Title"] = "Index";
 }
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link href="~/css/table.css" rel="stylesheet" />
-
 <br />
-<table class="datatable" id="datatable">
+<br />
+<table id="example" class="mdl-data-table" style="width:100%;position:relative;">
     <thead>
         <tr>
-            <th></th>
-            <th>Status</th>
-            <th>@Html.DisplayNameFor(mode => mode.Name)</th>
+            <td>
+                <a id="button_add" asp-action="AddOrEdit" style="color: #64B5F6;" class="material-icons x">add_box</a>
+            </td>
+        </tr>
+        <tr>
+            <th>Nombre</th>
+            <th>Acciones</th>
         </tr>
     </thead>
-
     <tbody>
+
         @foreach (var item in Model)
         {
-            <tr>
-                <td class="table-checkbox"><input type="checkbox" name="" id=""></td>
-                <td><span class="available"></span></td>
-                <td>@Html.DisplayFor(model => item.Name)</td>
+            <tr id="row_@item.Id">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+
+                <td style="display:flex;justify-content:center;">
+                    <a id="button_details" asp-action="Details" asp-route-id="@item.Id" style="color: #64B5F6;" class="material-icons">read_more</a>
+                    <a id="button_edit"  asp-action="AddOrEdit" asp-route-id="@item.Id" style="color: #64B5F6;" class="material-icons">edit</a>
+                    <a id="delete-button" style="color: #d32f2f;" class="material-icons x" onclick="Delete('@item.Name.ToString()', '@item.Name.ToString()',@item.Id);">delete</a>
+                </td>
             </tr>
+
         }
+
     </tbody>
 </table>
-
-<script src="~/js/table.js"></script>
-<script>
-    const dt = new DataTable('#datatable', [{
-        id: 'bAdd',
-        text: 'agregar',
-        icon: 'add_circle',
-        action() {
-           
-        }
-    }
-    ]);
-
-    dt.parse();
-</script>
-
-@*<a asp-action="Create">+</a>*@
-@*<table class="highlight responsive-table">
-        <thead>
-            <tr>
-                <th>@Html.DisplayNameFor(mode => mode.Name)</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(md => item.Name)</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-
-    </table>*@
-
+<partial name="_ViewPageDelete" />
+@section scripts{<script src="~/js/jsIndexFunctions.js" type="text/javascript"></script>;}
