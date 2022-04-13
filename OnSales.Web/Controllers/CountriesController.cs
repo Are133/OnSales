@@ -19,7 +19,7 @@ namespace OnSales.Web.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            return View(await _contex.Countries.ToListAsync());
+            return View(await _contex.Countries.Include(estate => estate.Estates).ToListAsync());
         }
 
 
@@ -27,6 +27,27 @@ namespace OnSales.Web.Controllers
         {
             return View();
         }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var country = await _contex.Countries
+                .Include(estate => estate.Estates)
+                .ThenInclude(municipipality => municipipality.Municipalities)
+                .FirstOrDefaultAsync(me => me.Id == id);
+
+            if (country == null)
+            {
+                return NotFound();
+            }
+
+            return View(country);
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
