@@ -22,7 +22,7 @@ namespace OnSales.Web.Controllers
             return View(await _contex.Countries.Include(estate => estate.Estates).ToListAsync());
         }
 
-
+        #region Countries
         public IActionResult AddOrEdit()
         {
             return View();
@@ -48,22 +48,21 @@ namespace OnSales.Web.Controllers
             return View(country);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddOrEdit(Country country)
         {
-            
-                if(country.Id == 0)
-                {
-                    _contex.Add(country);
-                }
-                else
-                {
-                    _contex.Update(country);
-                }
 
-                await _contex.SaveChangesAsync();
+            if (country.Id == 0)
+            {
+                _contex.Add(country);
+            }
+            else
+            {
+                _contex.Update(country);
+            }
+
+            await _contex.SaveChangesAsync();
 
 
             return RedirectToAction(nameof(Index));
@@ -78,5 +77,35 @@ namespace OnSales.Web.Controllers
             await _contex.SaveChangesAsync();
             return Ok(countrie);
         }
+
+        #endregion
+
+        #region Deparments
+        public async Task<IActionResult> DetailsOfEstates(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var estates = await _contex.Estates
+                .Include(d => d.Municipalities)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (estates == null)
+            {
+                return NotFound();
+            }
+
+            var country = await _contex.Estates.FirstOrDefaultAsync(estate => estate.Municipalities.FirstOrDefault(d => d.Id == estates.Id) != null);
+            estates.IdCountry = country.Id;
+            return View(estates);
+        }
+        #endregion
+
+
+
+
+
+
     }
 }

@@ -1,4 +1,4 @@
-﻿@model OnSales.Common.Entities.Country
+﻿@model OnSales.Common.Entities.Estate
 
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -11,7 +11,7 @@
 </div>
 
 <div style="margin-left:10px;" class="chip">
-    NO° de Estados <span class="mate" style="font-size: larger; color:#64B5F6;">{@Html.DisplayFor(model => model.EstatesNumber)}</span>
+    NO° de Municipios <span class="mate" style="font-size: larger; color:#64B5F6;">{@Html.DisplayFor(model => model.NumberMunicipalities)}</span>
 </div>
 
 <br />
@@ -25,7 +25,7 @@
     </div>
 
     <div class="col s1">
-        <a id="button_add" asp-action="AddOrEdit" asp-route-id="@Model.Id" style="color: #64B5F6;" class="material-icons">edit</a>
+        <a id="button_add" asp-action="AddOrEditMunicipality" asp-route-id="@Model.Id" style="color: #64B5F6;" class="material-icons">edit</a>
     </div>
 
 </div>
@@ -33,27 +33,21 @@
 <table id="example" class="mdl-data-table" style="width:100%;position:relative;">
     <thead>
         <tr>
-            <th>Estados</th>
-            <th>NO° Municipio-Provincias-Departamentos</th>
+            <th>Municipios</th>
             <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
 
-        @foreach (var item in Model.Estates)
+        @foreach (var item in Model.Municipalities)
         {
             <tr id="row_@item.Id">
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.NumberMunicipalities)
-                </td>
-
                 <td style="display:flex;justify-content:center;">
-                    <a id="button_details" asp-action="DetailsOfEstates" asp-route-id="@item.Id" style="color: #64B5F6;" class="material-icons">read_more</a>
-                    <a id="button_edit" asp-action="AddOrEditEstate" asp-route-id="@item.Id" style="color: #64B5F6;" class="material-icons">edit</a>
+                    <a id="button_edit" asp-action="AddOrEditMunicipality" asp-route-id="@item.Id" style="color: #64B5F6;" class="material-icons">edit</a>
                     <a id="delete-button" style="color: #d32f2f;" class="material-icons x" onclick="Delete('@item.Name.ToString()', '@item.Name.ToString()',@item.Id);">delete</a>
                 </td>
             </tr>
