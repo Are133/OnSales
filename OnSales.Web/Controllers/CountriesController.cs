@@ -23,11 +23,77 @@ namespace OnSales.Web.Controllers
         }
 
         #region Countries
-        public IActionResult AddOrEdit()
+
+        public async Task<IActionResult> AddOrEdit(int? id)
         {
-            return View();
+            if(id == null)
+            {
+                return View();
+            }
+
+            var country = await _contex.Countries.FindAsync(id);
+
+            Console.WriteLine(country);
+
+            return View(country);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddOrEdit(Country country, int id)
+        {
+            if(country.Id == 0)
+            {
+                try
+                {
+                    _contex.Add(country);
+                    await _contex.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Este pais ya esta registrado.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            if(id > 0)
+            {
+                try
+                {
+                    _contex.Update(country);
+                    await _contex.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Este pais ya esta registrado.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+            
+            return View();
+        }
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -48,25 +114,7 @@ namespace OnSales.Web.Controllers
             return View(country);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEdit(Country country)
-        {
-
-            if (country.Id == 0)
-            {
-                _contex.Add(country);
-            }
-            else
-            {
-                _contex.Update(country);
-            }
-
-            await _contex.SaveChangesAsync();
-
-
-            return RedirectToAction(nameof(Index));
-        }
+        
 
         [HttpPost, ActionName("DeleteConfirmed")]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -80,7 +128,7 @@ namespace OnSales.Web.Controllers
 
         #endregion
 
-        #region Deparments
+        #region Estates
         public async Task<IActionResult> DetailsOfEstates(int? id)
         {
             if (id == null)
