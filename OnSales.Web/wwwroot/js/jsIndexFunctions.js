@@ -44,6 +44,8 @@ let Delete = function (entity, element, id) {
     instance.open();
 }
 
+
+
 let ConfirmDelete = function () {
     $.ajax({
         type: "POST",

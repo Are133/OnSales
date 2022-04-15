@@ -1,0 +1,26 @@
+﻿@model OnSales.Common.Entities.Estate
+
+@{
+    ViewData["Title"] = "AddOrEdit";
+}
+
+
+<div class="row">
+    <form class="col s12" asp-action="AddOrEditEstates" enctype="multipart/form-data" id="formulario" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+
+        <div class="row">
+            <div class="input-field col s6">
+                <i class="material-icons prefix">public</i>
+                <input asp-for="Name" required id="icon_prefix" type="text" class="validate">
+                <label for="icon_prefix">Nombre</label>
+            </div>
+        </div>
+
+        <button class="btn waves-effect waves-light" type="submit" name="action">
+            Registrar
+            <i class="material-icons right">send</i>
+        </button>
+    </form>
+</div>

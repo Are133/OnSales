@@ -33,8 +33,6 @@ namespace OnSales.Web.Controllers
 
             var country = await _contex.Countries.FindAsync(id);
 
-            Console.WriteLine(country);
-
             return View(country);
         }
 
@@ -129,6 +127,113 @@ namespace OnSales.Web.Controllers
         #endregion
 
         #region Estates
+        public async Task<IActionResult> AddOrEditEstates(int? id)
+        {
+
+            var country = await _contex.Countries.FindAsync(id);
+
+
+            var model = new Estate { Id = country.Id };
+
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> AddOrEditEstatesEdit(int? id)
+        {
+
+            var country = await _contex.Estates.FindAsync(id);
+
+            return View(country);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddOrEditEstates(Estate estate)
+        {
+            if (ModelState.IsValid)
+            {
+                var country = await _contex.Countries
+                    .Include(c => c.Estates)
+                    .FirstOrDefaultAsync(c => c.Id == estate.IdCountry);
+                if (country == null)
+                {
+                    return NotFound();
+                }
+
+                try
+                {
+                    string url = "https://localhost:44310/Countries/Details";
+                    string cadenaMoreId = $"{url}/{country.Id}";
+                    estate.Id = 0;
+                    country.Estates.Add(estate);
+                    _contex.Update(country);
+                    await _contex.SaveChangesAsync();
+                    return Redirect(cadenaMoreId);
+
+
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There are a record with the same name.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                var country = await _contex.Countries
+                    .Include(c => c.Estates)
+                    .FirstOrDefaultAsync(c => c.Id == estate.IdCountry);
+                if (country == null)
+                {
+                    return NotFound();
+                }
+
+                try
+                {
+                    string url = "https://localhost:44310/Countries/Details";
+                    string cadenaMoreId = $"{url}/{country.Id}";
+                    estate.Id = 0;
+                    country.Estates.Add(estate);
+                    _contex.Update(country);
+                    await _contex.SaveChangesAsync();
+                    return Redirect(cadenaMoreId);
+
+
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There are a record with the same name.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            return View(estate);
+        }
+
+
+
         public async Task<IActionResult> DetailsOfEstates(int? id)
         {
             if (id == null)
@@ -145,7 +250,11 @@ namespace OnSales.Web.Controllers
             }
 
             var country = await _contex.Estates.FirstOrDefaultAsync(estate => estate.Municipalities.FirstOrDefault(d => d.Id == estates.Id) != null);
-            estates.IdCountry = country.Id;
+            if(estates.Municipalities.Count() > 0)
+            {
+                estates.IdCountry = country.Id;
+            }
+           
             return View(estates);
         }
         #endregion

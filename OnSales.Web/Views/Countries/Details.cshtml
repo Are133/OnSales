@@ -21,11 +21,7 @@
     </div>
 
     <div class="col s1">
-        <a id="button_add" asp-action="AddOrEditEstate" asp-route-id="@Model.Id" style="color: #64B5F6;" class="material-icons">add_box</a>
-    </div>
-
-    <div class="col s1">
-        <a id="button_add" asp-action="AddOrEdit" asp-route-id="@Model.Id" style="color: #64B5F6;" class="material-icons">edit</a>
+        <a id="button_add" asp-action="AddOrEditEstates" asp-route-id="@Model.Id" style="color: #64B5F6;" class="material-icons">add_box</a>
     </div>
 
 </div>
@@ -53,8 +49,8 @@
 
                 <td style="display:flex;justify-content:center;">
                     <a id="button_details" asp-action="DetailsOfEstates" asp-route-id="@item.Id" style="color: #64B5F6;" class="material-icons">read_more</a>
-                    <a id="button_edit" asp-action="AddOrEditEstate" asp-route-id="@item.Id" style="color: #64B5F6;" class="material-icons">edit</a>
-                    <a id="delete-button" style="color: #d32f2f;" class="material-icons x" onclick="Delete('@item.Name.ToString()', '@item.Name.ToString()',@item.Id);">delete</a>
+                    <a id="button_edit" asp-action="AddOrEditEstatesEdit" asp-route-id="@item.Id" style="color: #64B5F6;" class="material-icons">edit</a>
+                    <a id="delete-button" style="color: #d32f2f;" class="material-icons x" onclick="DeleteEstate('@item.Name.ToString()', '@item.Name.ToString()',@item.Id);">delete</a>
                 </td>
             </tr>
 

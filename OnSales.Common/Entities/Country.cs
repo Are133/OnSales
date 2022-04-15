@@ -13,5 +13,6 @@ namespace OnSales.Common.Entities
 
         public int EstatesNumber => Estates == null ? 0 : Estates.Count;
 
+
     }
 }
