@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OnSales.Common.Entities;
 using OnSales.Web.Data;
+using OnSales.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace OnSales.Web.Controllers
     public class CountriesController : Controller
     {
         private readonly DataContext _contex;
+
+        ErrorViewModel error = new ErrorViewModel();
 
         public CountriesController(DataContext context)
         {
@@ -52,7 +55,7 @@ namespace OnSales.Web.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Este pais ya esta registrado.");
+                        ModelState.AddModelError(string.Empty, error.DuplicatedError);
                     }
                     else
                     {
@@ -77,7 +80,7 @@ namespace OnSales.Web.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Este pais ya esta registrado.");
+                        ModelState.AddModelError(string.Empty, error.DuplicatedError);
                     }
                     else
                     {
@@ -127,29 +130,27 @@ namespace OnSales.Web.Controllers
         #endregion
 
         #region Estates
-        public async Task<IActionResult> AddOrEditEstates(int? id)
+        public async Task<IActionResult> AddEstates(int? id)
         {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
 
             var country = await _contex.Countries.FindAsync(id);
+            if (country == null)
+            {
+                return NotFound();
+            }
 
-
-            var model = new Estate { Id = country.Id };
-
-
+            var model = new Estate { IdCountry = country.Id };
             return View(model);
-        }
-
-        public async Task<IActionResult> AddOrEditEstatesEdit(int? id)
-        {
-
-            var country = await _contex.Estates.FindAsync(id);
-
-            return View(country);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEditEstates(Estate estate)
+        public async Task<IActionResult> AddEstates(Estate estate)
         {
             if (ModelState.IsValid)
             {
@@ -163,21 +164,18 @@ namespace OnSales.Web.Controllers
 
                 try
                 {
-                    string url = "https://localhost:44310/Countries/Details";
-                    string cadenaMoreId = $"{url}/{country.Id}";
                     estate.Id = 0;
                     country.Estates.Add(estate);
                     _contex.Update(country);
                     await _contex.SaveChangesAsync();
-                    return Redirect(cadenaMoreId);
-
-
+                    string urlViewBackGo = "https://localhost:44310/Countries/Details";
+                    return Redirect($"{urlViewBackGo}/{estate.IdCountry}");
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "There are a record with the same name.");
+                        ModelState.AddModelError(string.Empty, error.DuplicatedError);
                     }
                     else
                     {
@@ -188,35 +186,58 @@ namespace OnSales.Web.Controllers
                 {
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
+            }
+
+            return View();
+        }
+
+
+        public async Task<IActionResult> EditEstates(int? id)
+        {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var estate = await _contex.Estates.FindAsync(id);
+
+            if (estate == null)
+            {
+                return NotFound();
+            }
+
+            var country = await _contex.Countries.FirstOrDefaultAsync(c => c.Estates.FirstOrDefault(e => e.Id == estate.Id) != null);
+            estate.IdCountry = country.Id;
+            return View(estate);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditEstates(int id, Estate estate)
+        {
+           
+
+            if (id != estate.Id)
+            {
+                return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                var country = await _contex.Countries
-                    .Include(c => c.Estates)
-                    .FirstOrDefaultAsync(c => c.Id == estate.IdCountry);
-                if (country == null)
-                {
-                    return NotFound();
-                }
-
                 try
                 {
-                    string url = "https://localhost:44310/Countries/Details";
-                    string cadenaMoreId = $"{url}/{country.Id}";
-                    estate.Id = 0;
-                    country.Estates.Add(estate);
-                    _contex.Update(country);
+                    _contex.Update(estate);
                     await _contex.SaveChangesAsync();
-                    return Redirect(cadenaMoreId);
-
+                    string urlViewBackGo = "https://localhost:44310/Countries/Details";
+                    return Redirect($"{urlViewBackGo}/{estate.IdCountry}");
 
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "There are a record with the same name.");
+                        ModelState.AddModelError(string.Empty, error.DuplicatedError);
                     }
                     else
                     {
@@ -228,8 +249,8 @@ namespace OnSales.Web.Controllers
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
-
             return View(estate);
+          
         }
 
 
