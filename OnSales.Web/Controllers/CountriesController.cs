@@ -122,11 +122,21 @@ namespace OnSales.Web.Controllers
         {
 
             var countrie = await _contex.Countries.FirstOrDefaultAsync(c => c.Id == id);
-            _contex.Countries.Remove(countrie);
-            await _contex.SaveChangesAsync();
+            
+
+            try
+            {
+                _contex.Countries.Remove(countrie);
+                await _contex.SaveChangesAsync();
+           
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+            }
+            
             return Ok(countrie);
         }
-
         #endregion
 
         #region Estates
@@ -278,8 +288,41 @@ namespace OnSales.Web.Controllers
            
             return View(estates);
         }
+
+        [HttpPost, ActionName("DeleteConfirmedEstate")]
+        public async Task<IActionResult> DeleteConfirmedEstate(int id)
+        {
+
+            var estate = await _contex.Estates.FirstOrDefaultAsync(c => c.Id == id);
+            _contex.Estates.Remove(estate);
+
+            
+            await _contex.SaveChangesAsync();
+            return Ok(estate);
+        }
+
+
         #endregion
 
+        #region Municipalyties
+
+        public async Task<IActionResult> AddMunicipality(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var estate = await _contex.Municipalities.FindAsync(id);
+            if (estate == null)
+            {
+                return NotFound();
+            }
+
+            var model = new Municipality { IdEstate = estate.Id };
+            return View(model);
+        }
+        #endregion
 
 
 

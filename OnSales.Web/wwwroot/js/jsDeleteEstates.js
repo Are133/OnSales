@@ -1,55 +1,35 @@
-﻿$(document).ready(function () {
-    $("#example").DataTable({
-        autoWidth: false,
-        language: {
-            url: "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json",
-        },
-        columnDefs: [
-            {
-                targets: ["_all"],
-                className: "mdc-data-table__cell",
-                paging: true,
-                pageLength: 5,
-                lengthChange: true,
-                lengthMenu: [
-                    [100, 250, -1],
-                    [100, 250, "All"],
-                ],
-                order: [5, "asc"],
-                dom: "Bfrtip",
-            },
-        ],
-    });
-});
+﻿
+let idDeleteEstate;
 
-let idDelete;
 
-let Delete = function (entity, element, id) {
+let DeleteEstate = function (entity, element, id) {
+    idDeleteEstate = id;
 
-    idDelete = id;
+    console.log(idDeleteEstate)
 
     document.getElementById('cmdDelete').addEventListener('click', () => {
         console.log(id);
-        ConfirmDelete();
+        ConfirmDeleteEstate();
     })
 
     event.stopPropagation();
     document.getElementById('deleteTitle').innerHTML = `Eliminar ${entity}`;
     document.getElementById('deleteMessage').innerHTML = `¿Estas seguro de borrar el registro ${element} ?`;
 
-    
     let elem = document.getElementById('deleteModal');
     let instance = M.Modal.init(elem, { dismissible: false });
 
     instance.open();
+    
 }
 
+let urlApoyo = "https://localhost:44310/Countries";
 
-let ConfirmDelete = function () {
+let ConfirmDeleteEstate = function () {
     $.ajax({
         type: "POST",
-        url: "Countries/DeleteConfirmed",
-        data: { id: idDelete }
+        url: "https://localhost:44310/Countries/DeleteConfirmedEstate",
+        data: { id: idDeleteEstate }
     }).done(function (data) {
         document.getElementById(`row_${data.id}`).remove();
         var toastHTML = '<span>Registro eliminado</span><button class="btn-flat toast-action"><i class="material-icons">check</i></button>';
@@ -58,6 +38,6 @@ let ConfirmDelete = function () {
         var toastHTML = '<span>No elimino el registrp</span><button class="btn-flat toast-action"><i class="material-icons">error</i></button>';
         M.toast({ html: toastHTML });
     }).always(function () {
-       
+
     });
 }
