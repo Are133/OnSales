@@ -1,13 +1,14 @@
 ﻿@model OnSales.Common.Entities.Municipality
 
 @{
-    ViewData["Title"] = "AddEstates";
+    ViewData["Title"] = "Editar";
 }
 
 
 <div class="row">
-    <form class="col s12" asp-action="AddMunicipality" enctype="multipart/form-data" id="formularioEstates" method="post">
+    <form class="col s12" asp-action="EditMunicipality" enctype="multipart/form-data" id="formulario" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="IdEstate" />
 
         <div class="row">

@@ -115,26 +115,17 @@ namespace OnSales.Web.Controllers
             return View(country);
         }
 
-        
+
 
         [HttpPost, ActionName("DeleteConfirmed")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
             var countrie = await _contex.Countries.FirstOrDefaultAsync(c => c.Id == id);
-            
 
-            try
-            {
-                _contex.Countries.Remove(countrie);
-                await _contex.SaveChangesAsync();
-           
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.InnerException.Message);
-            }
-            
+            _contex.Countries.Remove(countrie);
+            await _contex.SaveChangesAsync();
+
             return Ok(countrie);
         }
         #endregion
@@ -313,7 +304,7 @@ namespace OnSales.Web.Controllers
                 return NotFound();
             }
 
-            var estate = await _contex.Municipalities.FindAsync(id);
+            var estate = await _contex.Estates.FindAsync(id);
             if (estate == null)
             {
                 return NotFound();
@@ -321,6 +312,112 @@ namespace OnSales.Web.Controllers
 
             var model = new Municipality { IdEstate = estate.Id };
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddMunicipality(Municipality municipality)
+        {
+            if (ModelState.IsValid)
+            {
+                var estates = await _contex.Estates
+                    .Include(e => e.Municipalities)
+                    .FirstOrDefaultAsync(m => m.Id == municipality.IdEstate);
+                if (estates == null)
+                {
+                    return NotFound();
+                }
+
+                try
+                {
+                    municipality.Id = 0;
+                    estates.Municipalities.Add(municipality);
+                    _contex.Update(estates);
+                    await _contex.SaveChangesAsync();
+                    string urlViewBackGo = "https://localhost:44310/Countries/DetailsOfEstates";
+                    return Redirect($"{urlViewBackGo}/{municipality.IdEstate}");
+
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There are a record with the same name.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            return View(municipality);
+        }
+
+        public async Task<IActionResult> EditMunicipality(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var municipality = await _contex.Municipalities.FindAsync(id);
+            if (municipality == null)
+            {
+                return NotFound();
+            }
+
+            var estates = await _contex.Estates.FirstOrDefaultAsync(e => e.Municipalities.FirstOrDefault(m => m.Id == municipality.Id) != null);
+            municipality.IdEstate = municipality.Id;
+            return View(municipality);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditMunicipality(Municipality municipality)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _contex.Update(municipality);
+                    await _contex.SaveChangesAsync();
+                    string urlViewBackGo = "https://localhost:44310/Countries/DetailsOfEstates";
+                    return Redirect($"{urlViewBackGo}/{municipality.IdEstate}");
+
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There are a record with the same name.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+            return View(municipality);
+        }
+
+        [HttpPost, ActionName("DeleteConfirmedMunicipality")]
+        public async Task<IActionResult> DeleteConfirmedEstateMunicipality(int id)
+        {
+
+            var municipality = await _contex.Municipalities.FirstOrDefaultAsync(m => m.Id == id);
+            _contex.Municipalities.Remove(municipality);
+            await _contex.SaveChangesAsync();
+            return Ok(municipality);
         }
         #endregion
 
