@@ -44,6 +44,7 @@ let Delete = function (entity, element, id) {
     instance.open();
 }
 
+
 let ConfirmDelete = function () {
     $.ajax({
         type: "POST",
@@ -54,7 +55,7 @@ let ConfirmDelete = function () {
         var toastHTML = '<span>Registro eliminado</span><button class="btn-flat toast-action"><i class="material-icons">check</i></button>';
         M.toast({ html: toastHTML });
     }).fail(function () {
-        var toastHTML = '<span>Registro eliminado</span><button class="btn-flat toast-action"><i class="material-icons">error</i></button>';
+        var toastHTML = '<span>No elimino el registrp</span><button class="btn-flat toast-action"><i class="material-icons">error</i></button>';
         M.toast({ html: toastHTML });
     }).always(function () {
        

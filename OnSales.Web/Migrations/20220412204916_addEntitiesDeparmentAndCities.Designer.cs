@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnSales.Web.Data;
 
 namespace OnSales.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220412204916_addEntitiesDeparmentAndCities")]
+    partial class addEntitiesDeparmentAndCities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,9 +30,6 @@ namespace OnSales.Web.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UrlImage")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -87,7 +86,7 @@ namespace OnSales.Web.Migrations
 
             modelBuilder.Entity("OnSales.Common.Entities.Estate", b =>
                 {
-                    b.HasOne("OnSales.Common.Entities.Country", "Country")
+                    b.HasOne("OnSales.Common.Entities.Country", null)
                         .WithMany("Estates")
                         .HasForeignKey("CountryId");
                 });
