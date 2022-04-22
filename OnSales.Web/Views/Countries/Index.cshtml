@@ -15,6 +15,7 @@
             </td>
         </tr>
         <tr>
+            <th>Bandera</th>
             <th>Pais</th>
             <th>NO° Estados</th>
             <th>Acciones</th>
@@ -26,6 +27,9 @@
         {
         <tr id="row_@item.Id">
             <td>
+                <img src="@item.ImageFullPath" class="cell-img"/>
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
 
@@ -33,7 +37,7 @@
                 @Html.DisplayFor(modelItem => item.EstatesNumber)
             </td>
 
-            <td style="display:flex;justify-content:center;">
+            <td>
                 <a id="button_details" asp-action="Details" asp-route-id="@item.Id" style="color: #64B5F6;" class="material-icons">read_more</a>
                 <a id="button_edit" asp-action="AddOrEdit" asp-route-id="@item.Id" style="color: #64B5F6;" class="material-icons">edit</a>
                 <a id="delete-button" style="color: #d32f2f;" class="material-icons" onclick="Delete('@item.Name.ToString()', '@item.Name.ToString()',@item.Id);">delete</a>

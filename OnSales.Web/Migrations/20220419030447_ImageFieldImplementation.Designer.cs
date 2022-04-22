@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnSales.Web.Data;
 
 namespace OnSales.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220419030447_ImageFieldImplementation")]
+    partial class ImageFieldImplementation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,11 +28,11 @@ namespace OnSales.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<Guid>("ImageId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UrlImage")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

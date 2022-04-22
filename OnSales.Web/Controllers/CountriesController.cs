@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OnSales.Common.Entities;
 using OnSales.Web.Data;
+using OnSales.Web.Helpers;
 using OnSales.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,12 @@ namespace OnSales.Web.Controllers
 
         ErrorViewModel error = new ErrorViewModel();
 
-        public CountriesController(DataContext context)
+        private readonly IBlobHelper _blobHelper;
+
+        public CountriesController(DataContext context, IBlobHelper blobHelper)
         {
             _contex = context;
+            _blobHelper = blobHelper;
         }
         public async Task<IActionResult> Index()
         {
@@ -47,6 +51,12 @@ namespace OnSales.Web.Controllers
             {
                 try
                 {
+                    if(country.ImageFile != null)
+                    {
+                        await _blobHelper.UploadBlobAsync(country.ImageFile, "flags");
+                        country.UrlImage = country.ImageFile.FileName;
+                    }
+                   
                     _contex.Add(country);
                     await _contex.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
