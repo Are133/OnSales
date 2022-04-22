@@ -53,9 +53,9 @@ namespace OnSales.Web.Controllers
                 {
                     if (country.ImageFile != null)
                     {
-                        string nameUpload = country.ImageFile.ToString();
-                        DateTime date = DateTime.Now;
-                        string nameUploadFinal = $"{nameUpload}{date}";
+                        //string nameUpload = country.ImageFile.ToString();
+                        //DateTime date = DateTime.Now;
+                        //string nameUploadFinal = $"{nameUpload}{date}";
                         await _blobHelper.UploadBlobAsync(country.ImageFile, "flags");
                         country.UrlImage = country.ImageFile.FileName;
                     }
