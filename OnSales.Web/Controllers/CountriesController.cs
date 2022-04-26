@@ -35,7 +35,9 @@ namespace OnSales.Web.Controllers
         {
             if(id == null)
             {
-                return View();
+                Country country1 = new Country();
+                country1.UrlImage = string.Empty;
+                return View(country1);
             }
 
             var country = await _contex.Countries.FindAsync(id);
@@ -53,9 +55,7 @@ namespace OnSales.Web.Controllers
                 {
                     if (country.ImageFile != null)
                     {
-                        //string nameUpload = country.ImageFile.ToString();
-                        //DateTime date = DateTime.Now;
-                        //string nameUploadFinal = $"{nameUpload}{date}";
+                        
                         await _blobHelper.UploadBlobAsync(country.ImageFile, "flags");
                         country.UrlImage = country.ImageFile.FileName;
                     }
@@ -85,6 +85,13 @@ namespace OnSales.Web.Controllers
             {
                 try
                 {
+                    if (country.ImageFile != null)
+                    {
+
+                        await _blobHelper.UploadBlobAsync(country.ImageFile, "flags");
+                        country.UrlImage = country.ImageFile.FileName;
+                    }
+
                     _contex.Update(country);
                     await _contex.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));

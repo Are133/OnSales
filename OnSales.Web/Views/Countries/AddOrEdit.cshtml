@@ -9,6 +9,7 @@
     <form class="col s12" asp-action="AddOrEdit" enctype="multipart/form-data" id="formulario" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="UrlImage" />
 
         <div class="row">
             <div class="input-field col s6">
@@ -19,6 +20,21 @@
         </div>
 
         <input type="file" asp-for="ImageFile" />
+
+        <div class="row">
+            @if (Model.UrlImage == string.Empty)
+            {
+                if (Model.UrlImage == null)
+                {
+                    <img src="@Model.ImageFullPath" alt="" />
+                }
+            }
+            else
+            {
+                <img src="@Model.ImageFullPath" alt="" />
+            }
+
+        </div>
 
         <button class="btn waves-effect waves-light" type="submit" name="action">
             Registrar
